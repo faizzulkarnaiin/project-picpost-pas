@@ -6,6 +6,7 @@ import ThemeRegistry from "./theme/themeRegistry";
 import { ReactNode } from "react";
 import { Session } from "next-auth";
 import NextAuthProvider from "@/components/nextAuthProvider";
+import Loading from "@/components/loading";
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "belajar",
@@ -19,11 +20,11 @@ interface NextAuthProps {
 export default function RootLayout({ children, session }: NextAuthProps) {
   return (
     <html lang="en" data-theme="light">
-      <body>
+      <body className="overflow-x-hidden">
         <NextAuthProvider session={session}>
-         
-            <ReactQuery>{children}</ReactQuery>
-          
+          <ReactQuery>
+            <Loading>{children}</Loading>
+          </ReactQuery>
         </NextAuthProvider>
       </body>
     </html>
