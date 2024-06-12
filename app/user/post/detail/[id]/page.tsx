@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import useAuthModule from "@/app/auth/lib";
 import LoadMore from "@/components/loadMore";
 import MenuPopupState from "@/components/Report";
+import DetailMenuPopupState from "@/components/DetailOptions";
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -221,29 +222,23 @@ const DetailPage = ({ params }: { params: { id: string } }) => {
                     )}
                   </div>
                 )}
-              </div>
+              </div> *
 
+             
               <div className="">
-                {session?.user?.id === detail?.created_by?.id && (
-                  <>
-                    <div className="bg-teal-900 cursor-pointer flex items-start justify-center p-2 rounded-full">
-                      <DeleteIcon
-                        fontSize="small"
-                        className="  text-white "
-                        onClick={() => handleDeletePost(detail?.id)}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-              <div className="">
-                {session?.user?.id !== detail?.created_by?.id && (
-                  <div className="">
-                    <MenuPopupState mutate={createReportMutate} />
-                  </div>
-                )}
+                <DetailMenuPopupState
+                  isLoadingCreateSaveDelete={isLoadingCreateSaveDelete}
+                  isLoadingCreatesave={isLoadingCreatesave}
+                  deleteMutate={postDeleteMutate}
+                  detail={detail}
+                  session={session}
+                  reportMutate={createReportMutate}
+                  saveDeleteMutate={saveDeleteMutate}
+                  saveMutate={saveMutate}
+                ></DetailMenuPopupState>
               </div>
             </div>
+
             <h2 className="text-3xl font-bold">{detail?.judul}</h2>
             <p className=" mt-2">{detail?.konten}</p>
             <div className="flex justify-between w-auto items-baseline mt-10">

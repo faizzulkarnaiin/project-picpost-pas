@@ -103,7 +103,7 @@ const page = ({ params }: { params: { id: string } }) => {
   };
 
   const handleRemoveImage = (index: number) => {
-    const newImages: any = [...(values.images || [])];
+    const newImages: any   = [...(values.images || [])];
     URL.revokeObjectURL(newImages[index].url);
     newImages.splice(index, 1);
     setFieldValue("images", newImages);

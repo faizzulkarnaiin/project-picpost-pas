@@ -13,11 +13,12 @@ import { useConfirmDelete } from "@/app/hook/useConfirmDelete";
 import usePostModule from "../../../lib";
 import { Form, FormikProvider, useFormik } from "formik";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useAuthModule from "@/app/auth/lib";
 import { useRouter } from "next/navigation";
 import MenuPopupState from "@/components/Report";
+import DetailMenuPopupState from "@/components/DetailOptions";
 
 const CreateCommentSchema = yup.object().shape({
   isi_komentar: yup.string().required("Isi Kolom Komentar").min(1).max(500),
@@ -124,7 +125,7 @@ const page = ({ params }: { params: { id: string } }) => {
       <Modal>
         {/* <Toaster /> */}
         <div
-          className={`rounded-xl  w-full h-auto lg:max-h-[400px] flex justify-between flex-col lg:flex-row `}
+          className={`rounded-xl shadow-xl w-full h-auto lg:max-h-[400px] flex justify-between flex-col lg:flex-row `}
         >
           {/* detail? Image */}
           <div
@@ -153,7 +154,16 @@ const page = ({ params }: { params: { id: string } }) => {
               className="flex flex-col gap-1.5  max-h-64 overflow-y-auto"
               id="scroll"
             >
-              <div className="w-full flex justify-between items-center mb-2">
+              <div className="w-full flex justify-between items-center mb-2 px-2">
+                {/* {detail?.tags.length !== 0 ? (
+              detail?.tags.map((e: any, i: any) => (
+                <p className="text-gray-700 font-thin mt-2" key={i}>
+                  {e.name}
+                </p>
+              ))
+            ) : (
+              <p>.</p>
+            )} */}
                 <div className="">
                   {detail?.isSavedByUser === false ? (
                     <div
@@ -176,44 +186,19 @@ const page = ({ params }: { params: { id: string } }) => {
                       )}
                     </div>
                   )}
-                </div>
-                <div className="gap-2">
-                  {session?.user?.id === detail?.created_by?.id ? (
-                    <>
-                      <div className="bg-teal-900 cursor-pointer flex items-start justify-center p-2 rounded-full">
-                        <DeleteIcon
-                          fontSize="small"
-                          className="  text-white "
-                          onClick={() => handleDeletePost(detail?.id)}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <p></p>
-                  )}
-                  {session?.user?.id === detail?.created_by?.id ? (
-                    <>
-                      <div className="cursor-pointer flex items-start justify-center mt-2">
-                        <button
-                          className=" btn bg-teal-900 text-white "
-                          onClick={() =>
-                            router.push(`/user/post/update/${detail?.id}`)
-                          }
-                        >
-                          update
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <p></p>
-                  )}
-                </div>
+                </div>{" "}
+                *
                 <div className="">
-                  {session?.user?.id === detail?.created_by?.id ? null : (
-                    <>
-                      <MenuPopupState mutate={createReportMutate} />
-                    </>
-                  )}
+                  <DetailMenuPopupState
+                    isLoadingCreateSaveDelete={isLoadingCreateSaveDelete}
+                    isLoadingCreatesave={isLoadingCreatesave}
+                    deleteMutate={postDeleteMutate}
+                    detail={detail}
+                    session={session}
+                    reportMutate={createReportMutate}
+                    saveDeleteMutate={saveDeleteMutate}
+                    saveMutate={saveMutate}
+                  ></DetailMenuPopupState>
                 </div>
               </div>
 
@@ -273,13 +258,11 @@ const page = ({ params }: { params: { id: string } }) => {
                       <div
                         className=" "
                         onClick={() => {
-                          if (detail?.created_by?.id === session?.user?.id) {
-                            router.push("user/post/profile");
-                          } else {
-                            router.push(
-                              `/user/post/userProfile/${detail?.created_by?.id}`
-                            );
-                          }
+                          detail?.created_by?.id === session?.user?.id
+                            ? router.push("/user/post/profile")
+                            : router.push(
+                                `/user/post/userProfile/${detail?.created_by?.id}`
+                              );
                         }}
                       >
                         <img
@@ -316,8 +299,14 @@ const page = ({ params }: { params: { id: string } }) => {
 
               <FormikProvider value={formik}>
                 <Form onSubmit={handleSubmit}>
-                  <section className="w-full lg:w-[400px]">
+                  <section className="w-full lg:w-600px]">
                     <input
+                      onClick={() => {
+                        if (profile?.data?.isBanned === true) {
+                          toast.error("cannot make a comment");
+                          console.log("ok");
+                        }
+                      }}
                       disabled={profile?.data?.isBanned}
                       onChange={handleChange}
                       id="isi_komentar"
@@ -325,7 +314,7 @@ const page = ({ params }: { params: { id: string } }) => {
                       value={values.isi_komentar}
                       type="text"
                       placeholder="Add Comment"
-                      className="input input-bordered w-full"
+                      className="input input-bordered w-full lg:w-[500px]"
                     />
                   </section>
                   {/* <FavoriteIcon/> */}
