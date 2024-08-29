@@ -84,7 +84,7 @@ const Page = () => {
               </p>
             }
           > */}
-          <Masonry columns={{ xs: 2, sm: 3, md: 6 }} spacing={2}>
+          <Masonry columns={{ xs: 2, sm: 3, md: 6 }} spacing={4}>
             {items?.map((item: any, index: any) => {
               return (
                 <Link

@@ -8,7 +8,7 @@ import {
   useFormik,
   getIn,
 } from "formik";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
 import { useSession } from "next-auth/react";
@@ -40,15 +40,30 @@ const page = ({ params }: { params: { id: string } }) => {
   const { mutate, isLoading } = useUpdatePost(params.id);
   const { data, isLoading: detailLoading } = useDetailPost(params.id);
   const [files, setFiles] = useState<File[]>([]);
+  
+  const [initialValues, setInitialValues] = useState<PostUpdatePayload>({
+    judul: "",
+    konten: "",
+    files: undefined,
+    images: [],
+    tags: [{ name: "" }],
+  });
+
+  useEffect(() => {
+    if (data) {
+      setInitialValues({
+        judul: data.judul,
+        konten: data.konten,
+        files: undefined,
+        images: data.images,
+        tags: data.tags || [{ name: "" }],
+      });
+    }
+  }, [data]);
 
   const formik = useFormik<PostUpdatePayload>({
-    initialValues: {
-      judul: data?.judul,
-      konten: data?.konten,
-      files: undefined,
-      images: data?.images,
-      tags: data?.tags || [{ name: "" }],
-    },
+    initialValues,
+    enableReinitialize: true,
     validationSchema: CreatePostSchema,
     onSubmit: async (values) => {
       try {
@@ -88,8 +103,6 @@ const page = ({ params }: { params: { id: string } }) => {
     errors,
     setFieldValue,
     touched,
-    resetForm,
-    setValues,
   } = formik;
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -103,7 +116,7 @@ const page = ({ params }: { params: { id: string } }) => {
   };
 
   const handleRemoveImage = (index: number) => {
-    const newImages: any   = [...(values.images || [])];
+    const newImages: any = [...(values.images || [])];
     URL.revokeObjectURL(newImages[index].url);
     newImages.splice(index, 1);
     setFieldValue("images", newImages);

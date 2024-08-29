@@ -125,7 +125,7 @@ const page = ({ params }: { params: { id: string } }) => {
       <Modal>
         {/* <Toaster /> */}
         <div
-          className={`rounded-xl shadow-xl w-full h-auto lg:max-h-[400px] flex justify-between flex-col lg:flex-row `}
+          className={`rounded-xl  w-full h-auto lg:max-h-[400px] flex justify-between flex-col lg:flex-row `}
         >
           {/* detail? Image */}
           <div
@@ -299,7 +299,7 @@ const page = ({ params }: { params: { id: string } }) => {
 
               <FormikProvider value={formik}>
                 <Form onSubmit={handleSubmit}>
-                  <section className="w-full lg:w-600px]">
+                  <section className="w-full lg:w-[400px]">
                     <input
                       onClick={() => {
                         if (profile?.data?.isBanned === true) {

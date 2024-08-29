@@ -328,10 +328,16 @@ const layout = ({
                   })}
                   <li>
                     <a
-                      onClick={() =>
-                        (document as any)
+                      onClick={() => {
+                        if (session) {
+                          (document as any)
                           .getElementById("my_modal_4")
                           .showModal()
+                        }else {
+                          toast.error("Anda Harus Login Terlebih Dahulu")
+                        }
+                      }
+                       
                       }
                     >
                       <SearchRoundedIcon />
